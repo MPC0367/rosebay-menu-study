@@ -23,7 +23,8 @@ const T = {
     none: (q) => `ไม่พบเมนูที่ตรงกับ “${q}”`,
     noneHelp: 'ลองพิมพ์ชื่อสั้นลง หรือใช้อีกภาษาหนึ่ง',
     clearAction: 'ล้างการค้นหา',
-    counts: (n, own, other) => `${n} รายการ · ภาพถ่ายของร้าน ${own} รูป${other ? ` · ภาพที่คนอื่นถ่าย ${other} รูป` : ''}`,
+    /* นับตามกรรมสิทธิ์ ไม่ใช่ตามว่าใครกดชัตเตอร์: ภาพเมนูที่ร้านพิมพ์เองเป็นของร้าน แม้สมาชิก Wongnai จะเป็นคนถ่ายหน้าเมนูไว้ */
+    counts: (n, own, other) => `${n} รายการ · ภาพที่ร้านเป็นเจ้าของ ${own} รูป${other ? ` · ภาพที่คนอื่นเป็นเจ้าของ ${other} รูป` : ''}`,
     failed: 'โหลดข้อมูลเมนูไม่สำเร็จ',
     priceH: 'ราคา', printed: 'เมนูที่ร้านพิมพ์', graphic: 'ภาพเมนูของร้าน', receipt: 'ใบเสร็จของร้าน',
     undated: 'ไม่ระบุวันที่',
@@ -41,15 +42,15 @@ const T = {
     },
     lastSeen: (d) => `พบในแหล่งข้อมูลครั้งล่าสุด ${d}`,
     lastSeenUndated: 'พบในแหล่งข้อมูลที่ไม่ระบุวันที่',
-    photoCap: (ch, credit) => `${credit ? credit + ' · ' : ''}ภาพที่ร้านเผยแพร่เองบน${ch === 'instagram' ? ' Instagram' : ' Facebook'} ของร้าน · ขออนุญาตเป็นลายลักษณ์อักษรอยู่ระหว่างดำเนินการ`,
-    printedMenuCap: (member) => `ภาพถ่ายจากเมนูที่ร้านพิมพ์เอง ถ่ายหน้าเมนูไว้โดยสมาชิก Wongnai${member ? ' (' + member + ')' : ''} · ร้านไม่ได้เป็นผู้โพสต์ภาพนี้เอง · ขออนุญาตเป็นลายลักษณ์อักษรอยู่ระหว่างดำเนินการ`,
+    photoCap: (ch, credit) => `${credit ? credit + ' · ' : ''}ภาพที่ร้านเผยแพร่เองบน${ch === 'instagram' ? ' Instagram' : ' Facebook'} ของร้าน · ร้านยังไม่ได้ให้อนุญาตเป็นลายลักษณ์อักษร`,
+    printedMenuCap: (member) => `ภาพถ่ายจากเมนูที่ร้านพิมพ์เอง ถ่ายหน้าเมนูไว้โดยสมาชิก Wongnai${member ? ' (' + member + ')' : ''} · ร้านไม่ได้เป็นผู้โพสต์ภาพนี้เอง · ร้านยังไม่ได้ให้อนุญาตเป็นลายลักษณ์อักษร`,
     /* ภาพที่คนอื่นถ่าย: ระบุเพียงแหล่งที่มา ไม่ระบุชื่อผู้ใด */
-    thirdPartyCap: (sourceKind) => `${sourceKind === 'wongnai-member' ? 'ภาพจากสมาชิก Wongnai' : sourceKind === 'lemon8-creator' ? 'ภาพจากครีเอเตอร์ Lemon8' : 'ภาพจากบล็อกรีวิว'} · ร้านไม่ได้โพสต์ภาพนี้เอง`,
+    thirdPartyCap: (sourceKind) => `${sourceKind === 'wongnai-member' ? 'ภาพถ่ายโดยสมาชิก Wongnai' : sourceKind === 'lemon8-creator' ? 'ภาพถ่ายโดยครีเอเตอร์ Lemon8' : 'ภาพจากบล็อกรีวิว'} · ร้านไม่ได้โพสต์ภาพนี้เอง · ยังไม่ได้ขออนุญาตจากเจ้าของภาพ`,
     markNote: 'ตราหรือข้อความที่ร้านพิมพ์ไว้ในภาพถูกเก็บไว้ทั้งหมด ไม่มีการครอบตัดออก',
     markNoteOther: 'ตราและข้อความทุกอย่างที่อยู่ในภาพถูกเก็บไว้ทั้งหมด ไม่มีการครอบตัดหรือแก้ไข',
     studioIdNote: 'ภาพนี้จับคู่กับรายการนี้จากลักษณะอาหารในภาพ โดย O2 Design Studio คำบรรยายของร้านไม่ได้ระบุชื่อรายการ',
     studioIdNoteOther: 'ภาพนี้จับคู่กับรายการนี้จากลักษณะอาหารในภาพ โดย O2 Design Studio แหล่งที่มาของภาพไม่ได้ระบุชื่อรายการนี้',
-    venueCap: (credit) => `ด้านหน้าร้าน · ภาพที่ร้านเผยแพร่เอง${credit ? ' · ' + credit : ''} · ขออนุญาตอยู่ระหว่างดำเนินการ`,
+    venueCap: (credit) => `ด้านหน้าร้าน · ภาพที่ร้านเผยแพร่เอง${credit ? ' · ' + credit : ''} · ร้านยังไม่ได้ให้อนุญาต`,
     allCats: 'หมวดหมู่ทั้งหมด',
   },
   en: {
@@ -65,7 +66,9 @@ const T = {
     none: (q) => `Nothing on the menu matches “${q}”`,
     noneHelp: 'Try a shorter name or the other language.',
     clearAction: 'Clear search',
-    counts: (n, own, other) => `${n} items · ${own} of the restaurant’s own photographs${other ? ` · ${other} photographs taken by other people` : ''}`,
+    /* Counted by who OWNS the photograph, not by who pressed the shutter: the printed-menu frames
+       are the restaurant's own menu pages, captured by a Wongnai member. */
+    counts: (n, own, other) => `${n} items · ${own} photographs the restaurant owns${other ? ` · ${other} owned by other people` : ''}`,
     failed: 'The menu data could not be loaded.',
     priceH: 'Price', printed: 'printed menu', graphic: 'menu graphic', receipt: 'restaurant receipt',
     undated: 'undated',
@@ -83,15 +86,15 @@ const T = {
     },
     lastSeen: (d) => `Last seen in a source dated ${d}`,
     lastSeenUndated: 'Last seen in a source that carries no date',
-    photoCap: (ch, credit) => `${credit ? credit + ' · ' : ''}published by the restaurant on its own ${ch === 'instagram' ? 'Instagram' : 'Facebook'} · written permission pending`,
-    printedMenuCap: (member) => `The restaurant’s own printed-menu photograph, captured from the printed menu by a Wongnai member${member ? ' (' + member + ')' : ''} · the restaurant did not post this image itself · written permission pending`,
+    photoCap: (ch, credit) => `${credit ? credit + ' · ' : ''}published by the restaurant on its own ${ch === 'instagram' ? 'Instagram' : 'Facebook'} · the restaurant has not given written permission`,
+    printedMenuCap: (member) => `The restaurant’s own printed-menu photograph, captured from the printed menu by a Wongnai member${member ? ' (' + member + ')' : ''} · the restaurant did not post this image itself · the restaurant has not given written permission`,
     /* A photograph someone else took. The source platform only — no member name, no handle. */
-    thirdPartyCap: (sourceKind) => `${sourceKind === 'wongnai-member' ? 'Photograph by a Wongnai member' : sourceKind === 'lemon8-creator' ? 'Photograph by a Lemon8 creator' : 'Photograph from a review blog'} · not posted by the restaurant`,
+    thirdPartyCap: (sourceKind) => `${sourceKind === 'wongnai-member' ? 'Photograph by a Wongnai member' : sourceKind === 'lemon8-creator' ? 'Photograph by a Lemon8 creator' : 'Photograph from a review blog'} · not posted by the restaurant · the photographer’s permission has not been obtained`,
     markNote: 'Every logo and printed word the restaurant put in frame is kept whole — nothing is cropped out.',
     markNoteOther: 'Every mark in this frame is kept whole — nothing is cropped out or retouched.',
     studioIdNote: 'O2 Design Studio matched this photograph to the item by what the dish looks like; the restaurant’s own caption does not name the dish.',
     studioIdNoteOther: 'O2 Design Studio matched this photograph to the item by what the dish looks like; its own source does not name this item.',
-    venueCap: (credit) => `The shopfront, published by the restaurant${credit ? ' · ' + credit : ''} · permission pending`,
+    venueCap: (credit) => `The shopfront, published by the restaurant${credit ? ' · ' + credit : ''} · the restaurant has not given permission`,
     allCats: 'All categories',
   },
 };
@@ -183,6 +186,17 @@ function thumbNode(image, alt) {
   return box;
 }
 
+/* Every photograph on this page carries a provenance line, and the browse view is where most
+   visitors meet it — so a photograph someone else owns says so ON THE CARD, in the same words the
+   dialog uses, not only behind a tap. An identification the record calls unconfirmed says that here
+   too, because the thumbnail is what implies "this is the dish". */
+function cardProvNode(image) {
+  if (image.provenanceKind !== 'third-party') return null;
+  const short = lang === 'th' ? image.idCaveatShortTh : image.idCaveatShortEn;
+  const line = t().thirdPartyCap(image.sourceKind) + (short ? ` · ${short}` : '');
+  return el('p', 'card__prov', line);
+}
+
 function cardNode(item, withCategoryLine) {
   const card = el('article', 'card');
   card.dataset.itemId = item.id;
@@ -212,6 +226,10 @@ function cardNode(item, withCategoryLine) {
     body.appendChild(second);
   }
   if (item.choice || item.variants.length > 1) body.appendChild(el('p', 'card__meta', t().choices));
+  if (item.image) {
+    const prov = cardProvNode(item.image);
+    if (prov) body.appendChild(prov);
+  }
   card.appendChild(body);
 
   const action = el('div', 'card__action');
@@ -275,6 +293,10 @@ function openSheet(item, opener) {
         ? t().printedMenuCap(item.image.captureMember)
         : t().photoCap(item.image.posted, item.image.credit));
     if (item.image.identifiedByStudio) cap.appendChild(el('span', 'cap__note', other ? t().studioIdNoteOther : t().studioIdNote));
+    /* An identification the catalogue itself calls unconfirmed gets the record's own words, not the
+       milder "matched on appearance" note: the appearance is what contradicts this one. */
+    const caveat = lang === 'th' ? item.image.idCaveatTh : item.image.idCaveatEn;
+    if (caveat) cap.appendChild(el('span', 'cap__note', caveat));
     if (item.image.hasMark) cap.appendChild(el('span', 'cap__mark', other ? t().markNoteOther : t().markNote));
     fig.appendChild(cap);
     body.appendChild(fig);

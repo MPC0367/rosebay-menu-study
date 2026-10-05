@@ -205,6 +205,9 @@ img { max-width: 100%; }
 .card__name button:hover { color: var(--green); }
 .card__second { margin: 2px 0 0; font-size: .9375rem; line-height: 1.6; color: var(--ink-3); }
 .card__meta { margin: var(--space-1) 0 0; font-size: .875rem; color: var(--ink-2); }
+/* The provenance of a photograph someone else owns, on the card itself. Quiet type at the foot of
+   the body, the same colour as the other source notes — a sentence the reader can find, not a badge. */
+.card__prov { margin: var(--space-2) 0 0; font-size: .8125rem; line-height: 1.5; color: var(--ink-3); text-wrap: pretty; }
 
 .card__action {
   grid-column: 1 / -1; display: flex; align-items: baseline; justify-content: space-between;
