@@ -37,3 +37,5 @@ index.html · style.css · app.js · menu.json · img/
 ```
 
 Built from the research catalogue in O2's private `rosebay-order` repository.
+
+> **Rights:** the photographs are not O2's and no permission has been given. Read [NOTICE.md](NOTICE.md) before reusing anything here.
