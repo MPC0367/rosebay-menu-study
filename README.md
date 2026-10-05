@@ -9,7 +9,7 @@ cart, and no order is ever sent anywhere. The page is `noindex, nofollow`.
 ## What it is built from
 
 The dishes, drinks and options were transcribed from the restaurant's publicly posted menu
-photographs (2021–2025), from articles about the restaurant, and from its own social posts. Every
+photographs (2021–2025), from articles and reviews, and from its own social posts. Every
 item records where it came from. Prices are **historical** values read off those photographed
 menus; the restaurant has not confirmed them, and an item with no printed price says so.
 
@@ -24,19 +24,31 @@ Read this before reusing anything here.
   blogs — and are published here for this demonstration without their permission. Each one carries
   a caption naming the kind of source and saying the restaurant did not post it and that its
   photographer was not asked.
-- No mark in any photograph has been removed, cropped out or retouched.
+- **People are named on the page**: the captions of the ten printed-menu photographs each name the
+  Wongnai member who photographed that page of the restaurant's printed menu. None of the seven
+  captions names the owner of its photograph. Two of the seven carry a mark their owner put in the
+  frame, kept whole: the Lemon8 photograph shows the platform's mark and the creator's handle, and
+  one Wongnai photograph shows its uploader's monogram. One of the three account names in the
+  printed-menu captions is also the account name recorded as the owner of one of the seven, so
+  that name is on the page, under a different photograph.
+- No logo or watermark in any photograph has been removed, cut through or retouched. Most of the
+  photographs are cropped to the dish. In the ten printed-menu photographs the crop leaves out the
+  page headings and the names and prices printed beside the photographs, and in three of them it
+  also leaves out a dish name or a price printed inside the photograph.
 
 The restaurant's name and marks are its own. If you are Rosebay, or you took one of these
 photographs, and you want an image taken down, write to O2 Design Studio and it comes down.
 
 ## Running it
 
-It is plain HTML, CSS and one script with a JSON payload — open `index.html`, or serve the folder.
+It is plain HTML, CSS and one script with a JSON payload — serve the folder with any static file
+server. Opened from disk in Chromium the menu does not load, because the script fetches `menu.json`
+and Chromium does not fetch `file://` URLs.
 
 ```
 index.html · style.css · app.js · menu.json · img/
 ```
 
-Built from the research catalogue in O2's private `rosebay-order` repository.
+Built from O2 Design Studio's private research catalogue.
 
 > **Rights:** the photographs are not O2's and no permission has been given. Read [NOTICE.md](NOTICE.md) before reusing anything here.

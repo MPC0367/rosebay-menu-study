@@ -19,15 +19,25 @@ The page is `noindex, nofollow` and carries that statement in Thai and English o
   outstanding.** It has been neither given nor refused — it has not yet been obtained.
 - **7 belong to other people**: three Wongnai members, a Lemon8 creator and two review blogs. They
   are published here **without their permission**. Each carries a caption naming the kind of source
-  and saying the restaurant did not post it and that its photographer's permission has not been obtained. No person is
-  named on the page.
-- No mark in any photograph has been removed, cropped out or retouched. Every logo and printed word
-  the restaurant put in frame is kept whole.
+  and saying the restaurant did not post it and that its photographer's permission has not been
+  obtained.
+- **People are named on the page.** The captions of the ten printed-menu photographs each name the
+  Wongnai member who photographed that page of the restaurant's printed menu: three account names
+  across the ten photographs, carried in `menu.json` as `captureMember`. None of the seven captions
+  names the owner of its photograph. Two of the seven carry a mark their owner put in the frame,
+  kept whole: the Lemon8 photograph shows the platform's mark and the creator's handle, and one
+  Wongnai photograph shows its uploader's monogram. One of the three account names in the
+  printed-menu captions is also the account name recorded as the owner of one of the seven, so
+  that name is on the page, under a different photograph.
+- No logo or watermark in any photograph has been removed, cut through or retouched. Most of the
+  photographs are cropped to the dish. In the ten printed-menu photographs the crop leaves out the
+  page headings and the names and prices printed beside the photographs, and in three of them it
+  also leaves out a dish name or a price printed inside the photograph.
 
 **O2 Design Studio holds no rights to any of these photographs.** They are published so the page
 renders as designed, on a `noindex` demonstration page, by the studio owner's decision of
-2026-10-05. That decision is recorded in the private `rosebay-order` repository
-(`docs/design/decisions/artifact.md`), with the provenance of every photograph.
+2026-10-05. That decision is recorded in the studio's private project records, with the provenance
+of every photograph.
 
 This is a known, accepted exposure, not an oversight. It resolves in one of two ways and no others:
 
@@ -44,9 +54,14 @@ No reason is needed and none will be asked for.
 
 ## The written content
 
-Dish names, Thai spellings and options are transcribed from Rosebay's own menu photographs
-(2021–2025). Prices are **historical** values read off those photographs; the restaurant has not
-confirmed them, and an item with no printed price says "price to be confirmed" rather than guessing.
-Nothing on the page is invented: where the sources are unclear, the page says so.
+Dish names, Thai spellings and options are transcribed from the restaurant's publicly posted menu
+photographs (2021–2025), from articles and reviews, and from its own social posts. Six items are on
+no menu photograph. Five of them are named in reviews, articles or the restaurant's own posts. The
+sixth, the lemongrass drink (น้ำตะไคร้), is recorded only in O2's own earlier design study of
+29 August 2026; no menu, review, article or post naming it has been found, and its entry says so. The
+page labels all six "Named only in reviews, articles or posts". Prices are
+**historical** values read off those photographed menus; the restaurant has not confirmed them, and
+an item with no printed price says "price to be confirmed" rather than guessing. Nothing on the
+page is invented: where the sources are unclear, the page says so.
 
 The restaurant's name and marks are its own.

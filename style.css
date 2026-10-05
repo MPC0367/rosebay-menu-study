@@ -1,4 +1,4 @@
-/* Rosebay menu design study — tokens from the app's ux-spec §3 (colour, type, space, motion).
+/* Rosebay menu design study — tokens shared with the studio's ordering demo (colour, type, space, motion).
    System fonts stand in for Fraunces / Jost / Noto: no font file is embedded. */
 
 :root {
@@ -65,7 +65,7 @@ img { max-width: 100%; }
   border-radius: var(--radius-s); font-size: .9375rem; text-decoration: none;
 }
 
-/* ── sticky stack: header, groups, chips (ux-spec §2.1) ───────────────────── */
+/* ── sticky stack: header, groups, chips ───────────────────── */
 
 .sticky-stack {
   position: sticky; top: 0; z-index: 30;
@@ -190,7 +190,7 @@ img { max-width: 100%; }
   background: var(--paper-2);
 }
 .card__thumb img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: 50% 50%; }
-/* Framing from the app's frameImage(): an asset whose printed mark cannot survive a square crop
+/* Framing carried in menu.json: a photograph whose printed mark cannot survive a square crop
    is shown whole on the second ground instead of being cropped. */
 .card__thumb--contain { background: var(--paper-2); }
 .card__thumb--contain img { object-fit: contain; }

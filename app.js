@@ -1,12 +1,14 @@
 /* Rosebay menu design study — reading only. No cart, no order, no network except menu.json.
-   Behaviour follows the app's ux-spec: group switch, category navigation with active tracking,
-   search across Thai and English names, and a read-only item dialog.
+   Behaviour: group switch, category navigation with active tracking, search across Thai and
+   English names, and a read-only item dialog.
    The photographs are published by the studio owner's decision of 2026-10-05. Most are the
-   restaurant's own, while its written permission is still pending; some were taken by other
-   people and are shown for this design demonstration. Each caption says which: a post by the
-   restaurant, its printed-menu photography captured from the menu by a Wongnai member, or a
-   photograph by someone else — named by platform only, never by person. Framing follows the
-   app's shared/image-frame.ts, so no crop ever hides a mark. */
+   restaurant's own, and the restaurant has not given written permission; some are owned by
+   other people, who have not given permission either, and are shown for this design
+   demonstration. Each caption says which: a post by the restaurant; its printed-menu
+   photography captured from the menu by a Wongnai member, whom that caption names; or a
+   photograph someone else owns, whose caption names the platform only, never a person.
+   The card thumbnail is framed so that no logo, watermark or branding print recorded for a
+   photograph is cut. */
 'use strict';
 
 const T = {
@@ -46,8 +48,8 @@ const T = {
     printedMenuCap: (member) => `ภาพถ่ายจากเมนูที่ร้านพิมพ์เอง ถ่ายหน้าเมนูไว้โดยสมาชิก Wongnai${member ? ' (' + member + ')' : ''} · ร้านไม่ได้เป็นผู้โพสต์ภาพนี้เอง · ร้านยังไม่ได้ให้อนุญาตเป็นลายลักษณ์อักษร`,
     /* ภาพที่คนอื่นถ่าย: ระบุเพียงแหล่งที่มา ไม่ระบุชื่อผู้ใด */
     thirdPartyCap: (sourceKind) => `${sourceKind === 'wongnai-member' ? 'ภาพถ่ายโดยสมาชิก Wongnai' : sourceKind === 'lemon8-creator' ? 'ภาพถ่ายโดยครีเอเตอร์ Lemon8' : 'ภาพจากบล็อกรีวิว'} · ร้านไม่ได้โพสต์ภาพนี้เอง · ยังไม่ได้ขออนุญาตจากเจ้าของภาพ`,
-    markNote: 'ตราหรือข้อความที่ร้านพิมพ์ไว้ในภาพถูกเก็บไว้ทั้งหมด ไม่มีการครอบตัดออก',
-    markNoteOther: 'ตราและข้อความทุกอย่างที่อยู่ในภาพถูกเก็บไว้ทั้งหมด ไม่มีการครอบตัดหรือแก้ไข',
+    markNote: 'ตราและลายพิมพ์ของร้านที่เห็นในภาพนี้ ไม่ได้ถูกลบ ตัดผ่าน หรือตกแต่งแก้ไข',
+    markNoteOther: 'เครื่องหมายทุกอย่างที่เห็นในภาพนี้ ไม่ได้ถูกลบ ตัดผ่าน หรือตกแต่งแก้ไข',
     studioIdNote: 'ภาพนี้จับคู่กับรายการนี้จากลักษณะอาหารในภาพ โดย O2 Design Studio คำบรรยายของร้านไม่ได้ระบุชื่อรายการ',
     studioIdNoteOther: 'ภาพนี้จับคู่กับรายการนี้จากลักษณะอาหารในภาพ โดย O2 Design Studio แหล่งที่มาของภาพไม่ได้ระบุชื่อรายการนี้',
     venueCap: (credit) => `ด้านหน้าร้าน · ภาพที่ร้านเผยแพร่เอง${credit ? ' · ' + credit : ''} · ร้านยังไม่ได้ให้อนุญาต`,
@@ -90,8 +92,8 @@ const T = {
     printedMenuCap: (member) => `The restaurant’s own printed-menu photograph, captured from the printed menu by a Wongnai member${member ? ' (' + member + ')' : ''} · the restaurant did not post this image itself · the restaurant has not given written permission`,
     /* A photograph someone else took. The source platform only — no member name, no handle. */
     thirdPartyCap: (sourceKind) => `${sourceKind === 'wongnai-member' ? 'Photograph by a Wongnai member' : sourceKind === 'lemon8-creator' ? 'Photograph by a Lemon8 creator' : 'Photograph from a review blog'} · not posted by the restaurant · the photographer’s permission has not been obtained`,
-    markNote: 'Every logo and printed word the restaurant put in frame is kept whole — nothing is cropped out.',
-    markNoteOther: 'Every mark in this frame is kept whole — nothing is cropped out or retouched.',
+    markNote: 'No logo or branding print in this photograph has been removed, cut through or retouched.',
+    markNoteOther: 'No mark in this photograph has been removed, cut through or retouched.',
     studioIdNote: 'O2 Design Studio matched this photograph to the item by what the dish looks like; the restaurant’s own caption does not name the dish.',
     studioIdNoteOther: 'O2 Design Studio matched this photograph to the item by what the dish looks like; its own source does not name this item.',
     venueCap: (credit) => `The shopfront, published by the restaurant${credit ? ' · ' + credit : ''} · the restaurant has not given permission`,
@@ -127,7 +129,7 @@ const nameOf = (item) => {
   return { primary, primaryLang, second, secondLang };
 };
 
-/* ── search (the app's own normalise and match rules, shared/text.ts §13.7) ── */
+/* ── search (the same normalise and match rules as the studio's ordering demo) ── */
 
 const FOLDS = [['กระเพรา', 'กะเพรา'], ['ไอศครีม', 'ไอศกรีม']];
 function normalizeSearch(input) {
@@ -163,10 +165,10 @@ function priceNode(item) {
   return wrap;
 }
 
-/* RB-10 — the thumbnail honours the framing menu.json carries from shared/image-frame.ts
-   (frameImage() against the square card box), so a printed mark is never framed away: an
-   asset whose mark cannot survive a square crop falls back to contain on the second ground,
-   exactly as the app does. */
+/* The thumbnail honours the framing menu.json carries for the square card box, so a mark
+   recorded for a photograph (a logo, a watermark, the restaurant's own print) is never framed
+   away: a photograph whose mark cannot survive a square crop falls back to contain on the
+   second ground, exactly as the studio's ordering demo does. */
 function thumbNode(image, alt) {
   const box = el('div', 'card__thumb');
   const img = el('img');
@@ -359,7 +361,7 @@ function openSheet(item, opener) {
 
   const source = block(t().sourceH);
   source.appendChild(el('p', null, t().availability[item.availability] || t().availability.unknown));
-  /* A sighting whose "date" is a sentence rather than a date (evidence.json carries
+  /* A sighting whose "date" is a sentence rather than a date (the catalogue carries
      "post date not accessible" for one record) must not be printed as if it were one. */
   const seen = item.latestSighting && item.latestSighting.date;
   if (seen) {
