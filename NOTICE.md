@@ -11,15 +11,16 @@ The page is `noindex, nofollow` and carries that statement in Thai and English o
 
 ## The photographs are not ours, and nobody has given permission
 
-29 photographs are published here.
+30 photographs are published here.
 
 - **23 are Rosebay's own.** Some the restaurant published itself on its Instagram
   (`@rosebayhomecookingcafe`) or Facebook; the rest are its own printed-menu photography, captured
   from the printed menu book by Wongnai members. **The restaurant's written permission is
   outstanding.** It has been neither given nor refused — it has not yet been obtained.
-- **6 were taken by other people**: Wongnai members, a Lemon8 creator and two review blogs. They
+- **7 belong to other people**: three Wongnai members, a Lemon8 creator and two review blogs. They
   are published here **without their permission**. Each carries a caption naming the kind of source
-  and saying the restaurant did not post it. No person is named on the page.
+  and saying the restaurant did not post it and that its photographer's permission has not been obtained. No person is
+  named on the page.
 - No mark in any photograph has been removed, cropped out or retouched. Every logo and printed word
   the restaurant put in frame is kept whole.
 

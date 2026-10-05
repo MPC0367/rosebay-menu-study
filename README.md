@@ -20,9 +20,10 @@ Read this before reusing anything here.
 - **23 photographs are Rosebay's own**: some the restaurant published itself on its Instagram or
   Facebook, the rest are its own printed-menu photography, captured from the printed menu book by
   Wongnai members. **The restaurant's written permission is still outstanding.**
-- **6 photographs were taken by other people** — Wongnai members, a Lemon8 creator and two review
+- **7 photographs belong to other people** — three Wongnai members, a Lemon8 creator and two review
   blogs — and are published here for this demonstration without their permission. Each one carries
-  a caption naming the kind of source and saying the restaurant did not post it.
+  a caption naming the kind of source and saying the restaurant did not post it and that its
+  photographer was not asked.
 - No mark in any photograph has been removed, cropped out or retouched.
 
 The restaurant's name and marks are its own. If you are Rosebay, or you took one of these
