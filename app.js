@@ -1,12 +1,16 @@
 /* Rosebay menu design study — reading only. No cart, no order, no network except menu.json.
    Behaviour: group switch, category navigation with active tracking, search across Thai and
    English names, and a read-only item dialog.
-   The photographs are published by the studio owner's decision of 2026-10-05. Most are the
-   restaurant's own, and the restaurant has not given written permission; some are owned by
-   other people, who have not given permission either, and are shown for this design
-   demonstration. Each caption says which: a post by the restaurant; its printed-menu
-   photography captured from the menu by a Wongnai member, whom that caption names; or a
-   photograph someone else owns, whose caption names the platform only, never a person.
+   Every item shows a photograph (the studio owner's decisions of 2026-10-05 and 2026-10-06),
+   and each caption says which of three kinds it is. The restaurant's own: a post by the
+   restaurant, its printed-menu photography captured from the menu by a Wongnai member, or its
+   menu card from its Google listing; the restaurant has not given written permission. A
+   photograph someone else owns, shown for this design demonstration without its owner's
+   permission; its caption names the platform only. Or a SAMPLE from a free-licence library,
+   which does not show the restaurant's food or drink: it is tagged on its thumbnail and
+   labelled on its card and in its details, with the licence it is used under.
+   No caption names a private person, with one exception: the creator of a sample whose
+   licence asks for attribution is named, with a link to the photograph's own page.
    The card thumbnail is framed so that no logo, watermark or branding print recorded for a
    photograph is cut. */
 'use strict';
@@ -18,15 +22,18 @@ const T = {
     historical: 'ราคาย้อนหลัง · ร้านยังไม่ได้ยืนยัน',
     disagree: 'แหล่งข้อมูลระบุราคาไม่ตรงกัน · ยังไม่ได้ยืนยัน',
     disagreeOption: 'แหล่งข้อมูลระบุตัวเลือกไม่ตรงกัน · ยังไม่ได้ยืนยัน',
-    pending: 'ราคารอยืนยัน', pendingNote: 'ไม่พบราคาบนเมนูที่ร้านพิมพ์',
-    pendingLong: 'ไม่พบราคาของรายการนี้บนเมนูที่ร้านพิมพ์ที่อ่านได้ ต้องยืนยันกับร้าน',
+    /* รายการที่ยังไม่มีราคา: บอกเฉพาะสิ่งที่จริงเสมอ คือ O2 ยังไม่มีราคาที่ยืนยันแล้ว ไม่บอกว่าไม่มีราคาพิมพ์ไว้ที่ใด
+       เพราะบางรายการมีราคาอยู่บนหน้าเมนูหรือโปสเตอร์ที่ร้านพิมพ์เอง ซึ่งรายการนั้นจะระบุไว้เอง (menu.json: pendingNote, pendingLong) */
+    pending: 'ราคารอยืนยัน', pendingNote: 'O2 ยังไม่มีราคาที่ยืนยันแล้วของรายการนี้',
+    pendingLong: 'O2 Design Studio ยังไม่มีราคาที่ยืนยันแล้วของรายการนี้ ต้องยืนยันกับร้าน',
     choices: 'มีตัวเลือก',
     results: (q, n) => `ผลการค้นหา “${q}” · ${n} รายการ`,
     none: (q) => `ไม่พบเมนูที่ตรงกับ “${q}”`,
     noneHelp: 'ลองพิมพ์ชื่อสั้นลง หรือใช้อีกภาษาหนึ่ง',
     clearAction: 'ล้างการค้นหา',
-    /* นับตามกรรมสิทธิ์ ไม่ใช่ตามว่าใครกดชัตเตอร์: ภาพเมนูที่ร้านพิมพ์เองเป็นของร้าน แม้สมาชิก Wongnai จะเป็นคนถ่ายหน้าเมนูไว้ */
-    counts: (n, own, other) => `${n} รายการ · ภาพที่ร้านเป็นเจ้าของ ${own} รูป${other ? ` · ภาพที่คนอื่นเป็นเจ้าของ ${other} รูป` : ''}`,
+    /* นับตามกรรมสิทธิ์ ไม่ใช่ตามว่าใครกดชัตเตอร์: ภาพเมนูที่ร้านพิมพ์เองเป็นของร้าน แม้สมาชิก Wongnai จะเป็นคนถ่ายหน้าเมนูไว้
+       ภาพตัวอย่างนับแยกเป็นกลุ่มที่สาม เพราะไม่ใช่ภาพอาหารหรือเครื่องดื่มของร้าน */
+    counts: (n, own, other, samples) => `${n} รายการ · ภาพที่ร้านเป็นเจ้าของ ${own} รูป${other ? ` · ภาพที่คนอื่นเป็นเจ้าของ ${other} รูป` : ''}${samples ? ` · ภาพตัวอย่าง ${samples} รูป ไม่ใช่ภาพจากร้าน` : ''}`,
     failed: 'โหลดข้อมูลเมนูไม่สำเร็จ',
     priceH: 'ราคา', printed: 'เมนูที่ร้านพิมพ์', graphic: 'ภาพเมนูของร้าน', receipt: 'ใบเสร็จของร้าน',
     undated: 'ไม่ระบุวันที่',
@@ -40,18 +47,35 @@ const T = {
       'listed-2023-24': 'อยู่ในเมนูที่ถ่ายไว้ปี 2023–2024',
       'special-verify': 'อยู่ในหน้าเมนูพิเศษ ต้องยืนยันกับร้าน',
       'reported-only': 'พบชื่อนี้เฉพาะในรีวิว บทความ หรือโพสต์',
+      'design-study-only': 'พบเฉพาะในงานศึกษาชิ้นก่อนของ O2',
       unknown: 'ไม่ทราบสถานะในเมนูปัจจุบัน',
     },
     lastSeen: (d) => `พบในแหล่งข้อมูลครั้งล่าสุด ${d}`,
     lastSeenUndated: 'พบในแหล่งข้อมูลที่ไม่ระบุวันที่',
     photoCap: (ch, credit) => `${credit ? credit + ' · ' : ''}ภาพที่ร้านเผยแพร่เองบน${ch === 'instagram' ? ' Instagram' : ' Facebook'} ของร้าน · ร้านยังไม่ได้ให้อนุญาตเป็นลายลักษณ์อักษร`,
-    printedMenuCap: (member) => `ภาพถ่ายจากเมนูที่ร้านพิมพ์เอง ถ่ายหน้าเมนูไว้โดยสมาชิก Wongnai${member ? ' (' + member + ')' : ''} · ร้านไม่ได้เป็นผู้โพสต์ภาพนี้เอง · ร้านยังไม่ได้ให้อนุญาตเป็นลายลักษณ์อักษร`,
-    /* ภาพที่คนอื่นถ่าย: ระบุเพียงแหล่งที่มา ไม่ระบุชื่อผู้ใด */
-    thirdPartyCap: (sourceKind) => `${sourceKind === 'wongnai-member' ? 'ภาพถ่ายโดยสมาชิก Wongnai' : sourceKind === 'lemon8-creator' ? 'ภาพถ่ายโดยครีเอเตอร์ Lemon8' : 'ภาพจากบล็อกรีวิว'} · ร้านไม่ได้โพสต์ภาพนี้เอง · ยังไม่ได้ขออนุญาตจากเจ้าของภาพ`,
+    /* ไม่ระบุชื่อบัญชีของสมาชิกที่ถ่ายหน้าเมนูไว้ ระบุเพียงว่าเป็นสมาชิก Wongnai */
+    printedMenuCap: () => 'ภาพถ่ายจากเมนูที่ร้านพิมพ์เอง ถ่ายหน้าเมนูไว้โดยสมาชิก Wongnai · ร้านไม่ได้เป็นผู้โพสต์ภาพนี้เอง · ร้านยังไม่ได้ให้อนุญาตเป็นลายลักษณ์อักษร',
+    /* การ์ดเมนูเป็นของร้าน แต่ไม่มีบันทึกว่าใครอัปโหลดขึ้น Google จึงไม่เรียกว่าเป็นโพสต์ของร้าน */
+    menuCardCap: () => 'ภาพจากการ์ดเมนูของร้านเอง ซึ่งอยู่ในหน้าข้อมูลร้านบน Google · ไม่มีบันทึกว่าใครเป็นผู้อัปโหลดขึ้น Google · ร้านยังไม่ได้ให้อนุญาตเป็นลายลักษณ์อักษร',
+    /* ภาพที่คนอื่นเป็นเจ้าของ: ระบุเพียงแหล่งที่มา ไม่ระบุชื่อผู้ใด
+       'wongnai-upload' คือภาพที่สมาชิก Wongnai อัปโหลดไว้ โดยยังไม่ได้ยืนยันว่าสมาชิกรายนั้นคือร้านเองหรือช่างภาพของร้านหรือไม่
+       จึงไม่กล่าวว่าร้านไม่ได้โพสต์ภาพนี้ บอกเพียงสิ่งที่ทราบ */
+    thirdPartyCap: (sourceKind) => `${({ 'wongnai-member': 'ภาพถ่ายโดยสมาชิก Wongnai', 'wongnai-upload': 'ภาพที่สมาชิก Wongnai อัปโหลดไว้', 'lemon8-creator': 'ภาพถ่ายโดยครีเอเตอร์ Lemon8', 'pantip-member': 'ภาพถ่ายโดยสมาชิก Pantip', blog: 'ภาพจากบล็อกรีวิว' })[sourceKind] || 'ภาพที่คนอื่นเป็นเจ้าของ'} · ${sourceKind === 'wongnai-upload' ? 'ยังไม่ได้ยืนยันว่าร้านหรือผู้อื่นเป็นเจ้าของภาพ' : 'ร้านไม่ได้โพสต์ภาพนี้เอง'} · ยังไม่ได้ขออนุญาตจากเจ้าของภาพ`,
+    /* ภาพตัวอย่าง: ข้อความกำกับเป็นข้อความตายตัว ภาพตัวอย่างต้องไม่ปรากฏโดยไม่มีข้อความนี้
+       ชื่อผู้สร้างสรรค์ภาพจะแสดงเฉพาะเมื่อสัญญาอนุญาตกำหนดให้ต้องระบุที่มา และถ้าต้นทางตั้งชื่อภาพไว้
+       ชื่อภาพจะพิมพ์ให้เห็นอยู่หน้าชื่อผู้สร้างสรรค์ */
+    sampleTag: 'ภาพตัวอย่าง',
+    sampleLabel: 'ภาพตัวอย่าง · ไม่ใช่ภาพจากร้าน',
+    sampleLicence: (licence) => `ใช้ตามสัญญาอนุญาต ${licence}`,
+    sampleTitle: (title) => `“${title}” `,
+    sampleBy: (creator) => `ภาพโดย ${creator}`,
+    sampleCropped: 'ครอบตัดและย่อขนาดจากภาพต้นฉบับ',
+    sampleSameLicence: 'ภาพที่ครอบตัดแล้วนี้เผยแพร่ภายใต้สัญญาอนุญาตเดียวกัน',
+    sampleCap(s) { return [this.sampleLabel, this.sampleLicence(s.licence), s.creator ? (s.title ? this.sampleTitle(s.title) : '') + this.sampleBy(s.creator) : null, s.creator ? this.sampleCropped : null, s.shareAlike ? this.sampleSameLicence : null].filter(Boolean).join(' · '); },
     markNote: 'ตราและลายพิมพ์ของร้านที่เห็นในภาพนี้ ไม่ได้ถูกลบ ตัดผ่าน หรือตกแต่งแก้ไข',
     markNoteOther: 'เครื่องหมายทุกอย่างที่เห็นในภาพนี้ ไม่ได้ถูกลบ ตัดผ่าน หรือตกแต่งแก้ไข',
-    studioIdNote: 'ภาพนี้จับคู่กับรายการนี้จากลักษณะอาหารในภาพ โดย O2 Design Studio คำบรรยายของร้านไม่ได้ระบุชื่อรายการ',
-    studioIdNoteOther: 'ภาพนี้จับคู่กับรายการนี้จากลักษณะอาหารในภาพ โดย O2 Design Studio แหล่งที่มาของภาพไม่ได้ระบุชื่อรายการนี้',
+    /* ข้อความเดียวใช้ได้ทั้งกับภาพที่ร้านโพสต์เองและภาพของคนอื่น */
+    studioIdNote: 'O2 Design Studio จับคู่ภาพนี้กับรายการนี้จากสิ่งที่เห็นในภาพ ผู้ที่เผยแพร่ภาพไม่ได้ระบุชื่อรายการไว้',
     venueCap: (credit) => `ด้านหน้าร้าน · ภาพที่ร้านเผยแพร่เอง${credit ? ' · ' + credit : ''} · ร้านยังไม่ได้ให้อนุญาต`,
     allCats: 'หมวดหมู่ทั้งหมด',
   },
@@ -61,16 +85,20 @@ const T = {
     historical: 'Historical price · not verified by the restaurant',
     disagree: 'Sources give different prices · not verified',
     disagreeOption: 'Sources disagree on the options · not verified',
-    pending: 'Price to be confirmed', pendingNote: 'No price on any menu the restaurant printed',
-    pendingLong: 'No printed menu we could read gives a price for this item. It has to be confirmed with the restaurant.',
+    /* An item with no price says only what is always true of it: O2 has no confirmed price. It does not say
+       that no printed price exists, because for some items the restaurant's own printed page or poster shows
+       one; those items say so in their own words (menu.json: pendingNote, pendingLong). */
+    pending: 'Price to be confirmed', pendingNote: 'O2 has no confirmed price for this item',
+    pendingLong: 'O2 Design Studio has no confirmed price for this item. It has to be confirmed with the restaurant.',
     choices: 'Choices available',
     results: (q, n) => `Results for “${q}” · ${n}`,
     none: (q) => `Nothing on the menu matches “${q}”`,
     noneHelp: 'Try a shorter name or the other language.',
     clearAction: 'Clear search',
     /* Counted by who OWNS the photograph, not by who pressed the shutter: the printed-menu frames
-       are the restaurant's own menu pages, captured by a Wongnai member. */
-    counts: (n, own, other) => `${n} items · ${own} photographs the restaurant owns${other ? ` · ${other} owned by other people` : ''}`,
+       are the restaurant's own menu pages, captured by a Wongnai member. Samples are a third
+       group, counted apart: they are not photographs of the restaurant's food or drink. */
+    counts: (n, own, other, samples) => `${n} items · ${own} photographs the restaurant owns${other ? ` · ${other} owned by other people` : ''}${samples ? ` · ${samples} sample images, not from the restaurant` : ''}`,
     failed: 'The menu data could not be loaded.',
     priceH: 'Price', printed: 'printed menu', graphic: 'menu graphic', receipt: 'restaurant receipt',
     undated: 'undated',
@@ -84,18 +112,36 @@ const T = {
       'listed-2023-24': 'On a menu sheet photographed in 2023–2024',
       'special-verify': 'On a SPECIAL page — needs confirming with the restaurant',
       'reported-only': 'Named only in reviews, articles or posts',
+      'design-study-only': 'Recorded only in O2’s earlier design study',
       unknown: 'Current status unknown',
     },
     lastSeen: (d) => `Last seen in a source dated ${d}`,
     lastSeenUndated: 'Last seen in a source that carries no date',
     photoCap: (ch, credit) => `${credit ? credit + ' · ' : ''}published by the restaurant on its own ${ch === 'instagram' ? 'Instagram' : 'Facebook'} · the restaurant has not given written permission`,
-    printedMenuCap: (member) => `The restaurant’s own printed-menu photograph, captured from the printed menu by a Wongnai member${member ? ' (' + member + ')' : ''} · the restaurant did not post this image itself · the restaurant has not given written permission`,
-    /* A photograph someone else took. The source platform only — no member name, no handle. */
-    thirdPartyCap: (sourceKind) => `${sourceKind === 'wongnai-member' ? 'Photograph by a Wongnai member' : sourceKind === 'lemon8-creator' ? 'Photograph by a Lemon8 creator' : 'Photograph from a review blog'} · not posted by the restaurant · the photographer’s permission has not been obtained`,
+    /* The member who photographed the menu page is not named: a Wongnai member, and no more. */
+    printedMenuCap: () => 'The restaurant’s own printed-menu photograph, captured from the printed menu by a Wongnai member · the restaurant did not post this image itself · the restaurant has not given written permission',
+    /* The card is the restaurant's; who put it on Google was not recorded, so it is not called a post by the restaurant. */
+    menuCardCap: () => 'The restaurant’s own menu card, as found on its Google listing · who uploaded it to Google was not recorded · the restaurant has not given written permission',
+    /* A photograph someone else owns. The source platform only — no member name, no handle.
+       'wongnai-upload' is a photograph a Wongnai member uploaded where it is not established whether that
+       member is the restaurant or its photographer. Its line does not say the restaurant did not post it:
+       that is not known. It says what is known. */
+    thirdPartyCap: (sourceKind) => `${({ 'wongnai-member': 'Photograph by a Wongnai member', 'wongnai-upload': 'Photograph uploaded to Wongnai by a member', 'lemon8-creator': 'Photograph by a Lemon8 creator', 'pantip-member': 'Photograph by a Pantip member', blog: 'Photograph from a review blog' })[sourceKind] || 'Photograph owned by someone else'} · ${sourceKind === 'wongnai-upload' ? 'whether the restaurant or someone else owns it has not been established · its owner’s' : 'not posted by the restaurant · the photographer’s'} permission has not been obtained`,
+    /* A sample. The label is a fixed string, and a sample is never shown without it. The creator is
+       printed only where the licence asks for attribution, and where the source gives the work a title,
+       the title is printed, as words, in front of the creator. */
+    sampleTag: 'Sample',
+    sampleLabel: 'Sample image — not from the restaurant',
+    sampleLicence: (licence) => `used under the ${licence} licence`,
+    sampleTitle: (title) => `“${title}”, `,
+    sampleBy: (creator) => `photo by ${creator}`,
+    sampleCropped: 'cropped and resized from the original',
+    sampleSameLicence: 'this cropped copy is offered under the same licence',
+    sampleCap(s) { return [this.sampleLabel, this.sampleLicence(s.licence), s.creator ? (s.title ? this.sampleTitle(s.title) : '') + this.sampleBy(s.creator) : null, s.creator ? this.sampleCropped : null, s.shareAlike ? this.sampleSameLicence : null].filter(Boolean).join(' · '); },
     markNote: 'No logo or branding print in this photograph has been removed, cut through or retouched.',
     markNoteOther: 'No mark in this photograph has been removed, cut through or retouched.',
-    studioIdNote: 'O2 Design Studio matched this photograph to the item by what the dish looks like; the restaurant’s own caption does not name the dish.',
-    studioIdNoteOther: 'O2 Design Studio matched this photograph to the item by what the dish looks like; its own source does not name this item.',
+    /* One wording, true of a post by the restaurant and of someone else's photograph alike. */
+    studioIdNote: 'O2 Design Studio matched this photograph to the item by what it looks like; whoever published the photograph did not name the item.',
     venueCap: (credit) => `The shopfront, published by the restaurant${credit ? ' · ' + credit : ''} · the restaurant has not given permission`,
     allCats: 'All categories',
   },
@@ -151,7 +197,10 @@ function priceNode(item) {
   const wrap = el('p', 'price');
   if (p.kind === 'pending') {
     wrap.appendChild(el('span', 'pill', t().pending));
-    wrap.appendChild(el('span', 'price__note', t().pendingNote));
+    /* The usual line says only that O2 has no confirmed price. Where menu.json records that the restaurant's
+       own printed page or poster shows a figure which the catalogue has not taken in, the item says that
+       instead: what the print reads, where it was seen, and that the restaurant has not confirmed it. */
+    wrap.appendChild(el('span', 'price__note', (lang === 'th' ? p.pendingNoteTh : p.pendingNoteEn) || t().pendingNote));
     return wrap;
   }
   let amount;
@@ -185,16 +234,74 @@ function thumbNode(image, alt) {
   if (image.thumbFit === 'contain') box.classList.add('card__thumb--contain');
   if (image.thumbBackground) box.style.background = image.thumbBackground;
   box.appendChild(img);
+  if (image.provenanceKind === 'sample') {
+    /* A sample is never shown bare: the thumbnail itself says so, in words. Hidden from assistive
+       technology, because the alt text opens with the same words and the card line repeats them. */
+    const tag = el('span', 'card__thumb-tag', t().sampleTag);
+    tag.setAttribute('aria-hidden', 'true');
+    box.appendChild(tag);
+  }
   return box;
 }
 
+/* Alt text comes from the catalogue. Were one ever missing, a photograph of the item falls back to
+   the item's name. A sample never does — it is not a picture of that item — and says what it is. */
+const altOf = (image, itemName) => (lang === 'th' ? image.altTh : image.altEn)
+  || (image.provenanceKind === 'sample' ? t().sampleLabel : itemName);
+
+/* The only links this page builds from menu.json: a sample's licence and, where the licence asks
+   for attribution, the photograph's own page. https only, always in a new tab, with no opener and
+   no referrer. Anything that is not an https address is printed as plain text. */
+function linkNode(text, url) {
+  if (typeof url !== 'string' || !/^https:\/\/[^\s]+$/.test(url)) return document.createTextNode(text);
+  const a = el('a', null, text);
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  return a;
+}
+
+/* The provenance line of a photograph, chosen in one place by the kind menu.json records for it.
+   A printed-menu capture or the menu card is never described as something the restaurant posted,
+   a photograph someone else owns is never described as the restaurant's, and a sample is never
+   described as a photograph of the restaurant's food. None of these names a private person. */
+function provLine(image) {
+  const kind = image.provenanceKind;
+  if (kind === 'sample') return t().sampleCap(image.sample);
+  if (kind === 'third-party') return t().thirdPartyCap(image.sourceKind);
+  if (kind === 'printed-menu') return t().printedMenuCap();
+  if (kind === 'menu-card') return t().menuCardCap();
+  return t().photoCap(image.posted, image.credit);
+}
+
+/* A sample's caption says the same words as provLine(), built piece by piece so that the licence
+   and — only where the licence asks for attribution — the creator can be links. The label comes
+   first, always. Where the source gives the work a title, the title is printed as words in front of
+   the creator: a title kept only as a link's tooltip is never seen on a phone. */
+function sampleCapNode(sample) {
+  const cap = el('figcaption', 'cap--sample');
+  cap.appendChild(el('strong', 'cap__label', t().sampleLabel));
+  cap.append(' · ', linkNode(t().sampleLicence(sample.licence), sample.licenceUrl));
+  if (sample.creator) {
+    cap.append(' · ');
+    if (sample.title) cap.append(t().sampleTitle(sample.title));
+    cap.append(linkNode(t().sampleBy(sample.creator), sample.sourceUrl));
+    cap.append(' · ', t().sampleCropped);
+  }
+  if (sample.shareAlike) cap.append(' · ', t().sampleSameLicence);
+  return cap;
+}
+
 /* Every photograph on this page carries a provenance line, and the browse view is where most
-   visitors meet it — so a photograph someone else owns says so ON THE CARD, in the same words the
-   dialog uses, not only behind a tap. An identification the record calls unconfirmed says that here
-   too, because the thumbnail is what implies "this is the dish". */
+   visitors meet it — so a photograph the restaurant does not own says so ON THE CARD, in the same
+   words the dialog uses, not only behind a tap: a sample carries its label, and a photograph
+   someone else owns carries its platform line. An identification the record calls unconfirmed
+   says that here too, because the thumbnail is what implies "this is the dish" — and it says so
+   on a photograph the restaurant owns as well, which otherwise carries no line on its card. */
 function cardProvNode(image) {
-  if (image.provenanceKind !== 'third-party') return null;
+  if (image.provenanceKind === 'sample') return el('p', 'card__prov card__prov--sample', t().sampleLabel);
   const short = lang === 'th' ? image.idCaveatShortTh : image.idCaveatShortEn;
+  if (image.provenanceKind !== 'third-party') return short ? el('p', 'card__prov', short.charAt(0).toUpperCase() + short.slice(1)) : null;
   const line = t().thirdPartyCap(image.sourceKind) + (short ? ` · ${short}` : '');
   return el('p', 'card__prov', line);
 }
@@ -203,8 +310,7 @@ function cardNode(item, withCategoryLine) {
   const card = el('article', 'card');
   card.dataset.itemId = item.id;
   const names = nameOf(item);
-  const altLang = lang === 'th' ? item.image?.altTh : item.image?.altEn;
-  if (item.image) card.appendChild(thumbNode(item.image, altLang || names.primary));
+  if (item.image) card.appendChild(thumbNode(item.image, altOf(item.image, names.primary)));
   else card.classList.add('card--text');
 
   const body = el('div', 'card__body');
@@ -283,23 +389,27 @@ function openSheet(item, opener) {
     img.sizes = '(min-width: 560px) 512px, 92vw';
     img.width = item.image.width;
     img.height = item.image.height;
-    img.alt = (lang === 'th' ? item.image.altTh : item.image.altEn) || names.primary;
+    img.alt = altOf(item.image, names.primary);
     fig.appendChild(img);
-    /* The caption says where the photograph came from. A printed-menu capture is never
-       described as something the restaurant posted, and a photograph someone else took is never
-       described as the restaurant's: it names its platform and nothing about a person. */
-    const other = item.image.provenanceKind === 'third-party';
-    const cap = el('figcaption', null, other
-      ? t().thirdPartyCap(item.image.sourceKind)
-      : item.image.provenanceKind === 'printed-menu'
-        ? t().printedMenuCap(item.image.captureMember)
-        : t().photoCap(item.image.posted, item.image.credit));
-    if (item.image.identifiedByStudio) cap.appendChild(el('span', 'cap__note', other ? t().studioIdNoteOther : t().studioIdNote));
+    /* The caption says where the photograph came from: provLine() for a photograph of the item,
+       and for a sample the same words with its label first and its licence linked. */
+    const kind = item.image.provenanceKind;
+    const cap = kind === 'sample' ? sampleCapNode(item.image.sample) : el('figcaption', null, provLine(item.image));
+    /* Matched to the item by what it looks like: said of a post by the restaurant and of someone
+       else's photograph in the same words. */
+    if (item.image.identifiedByStudio) cap.appendChild(el('span', 'cap__note', t().studioIdNote));
     /* An identification the catalogue itself calls unconfirmed gets the record's own words, not the
        milder "matched on appearance" note: the appearance is what contradicts this one. */
     const caveat = lang === 'th' ? item.image.idCaveatTh : item.image.idCaveatEn;
     if (caveat) cap.appendChild(el('span', 'cap__note', caveat));
-    if (item.image.hasMark) cap.appendChild(el('span', 'cap__mark', other ? t().markNoteOther : t().markNote));
+    for (const note of item.image.notes || []) cap.appendChild(el('span', 'cap__note', lang === 'th' ? note.th : note.en));
+    /* Where the crop leaves out a mark or a caption that sits elsewhere in the original frame, the
+       caption says exactly that, in place of the "no mark was removed" note, which would not be
+       true of it. The restaurant's own wording is kept for the restaurant's own photographs. */
+    const ownFrame = kind === 'restaurant-post' || kind === 'printed-menu' || kind === 'menu-card';
+    const cropNote = lang === 'th' ? item.image.cropNoteTh : item.image.cropNoteEn;
+    if (cropNote) cap.appendChild(el('span', 'cap__mark', cropNote));
+    else if (item.image.hasMark) cap.appendChild(el('span', 'cap__mark', ownFrame ? t().markNote : t().markNoteOther));
     fig.appendChild(cap);
     body.appendChild(fig);
   }
@@ -332,7 +442,7 @@ function openSheet(item, opener) {
     const labels = item.crossedOut.map((v) => (lang === 'th' ? (v.labelTh || v.labelEn) : (v.labelEn || v.labelTh))).join(', ');
     price.appendChild(el('p', null, `${t().struck}: ${labels}`));
   }
-  if (item.price.kind === 'pending') price.appendChild(el('p', null, t().pendingLong));
+  if (item.price.kind === 'pending') price.appendChild(el('p', null, (lang === 'th' ? item.price.pendingLongTh : item.price.pendingLongEn) || t().pendingLong));
   if (item.price.evidence.length > 0) {
     const rows = el('div', 'rows');
     for (const e of item.price.evidence) {
@@ -585,12 +695,14 @@ function setLang(next) {
 }
 
 function renderCounts() {
-  /* Counted apart, because the two are not the same thing: the restaurant's own photographs and
-     the ones other people took. The shopfront is the restaurant's own. */
-  const shown = data.items.filter((i) => i.image);
-  const other = shown.filter((i) => i.image.provenanceKind === 'third-party').length;
-  const own = shown.length - other + (data.venue ? 1 : 0);
-  $('[data-count-line]').textContent = t().counts(data.items.length, own, other);
+  /* Counted apart, because they are not the same thing: the photographs the restaurant owns (the
+     shopfront among them), the ones other people own, and the sample images, which are not
+     photographs of the restaurant's food or drink at all. */
+  const kinds = data.items.filter((i) => i.image).map((i) => i.image.provenanceKind);
+  const other = kinds.filter((k) => k === 'third-party').length;
+  const samples = kinds.filter((k) => k === 'sample').length;
+  const own = kinds.length - other - samples + (data.venue ? 1 : 0);
+  $('[data-count-line]').textContent = t().counts(data.items.length, own, other, samples);
 }
 
 function renderVenue() {
@@ -615,12 +727,35 @@ function renderVenue() {
 
 /* ── wiring ─────────────────────────────────────────────────────────────────── */
 
+/* The most of the window the header stack may hold while it stays pinned. */
+const STICKY_SHARE = 0.4;
+
 function measureSticky() {
   const stack = $('[data-sticky-stack]');
-  const set = () => document.documentElement.style.setProperty('--sticky-top', `${Math.round(stack.getBoundingClientRect().height)}px`);
+  const notice = $('.notice');
+  const set = () => {
+    const root = document.documentElement.style;
+    const height = Math.round(stack.getBoundingClientRect().height);
+    /* With text enlarged on a phone the group buttons wrap and the stack grows past half the window, leaving
+       the reader less than half the screen for the menu. Past its share the stack is released: it scrolls
+       away with the page like any other header (style.css), and nothing is then pinned above the menu. Its
+       height is the same pinned or released, so this cannot flip back and forth. */
+    const released = height > window.innerHeight * STICKY_SHARE;
+    stack.toggleAttribute('data-released', released);
+    root.setProperty('--sticky-top', `${released ? 0 : height}px`);
+    /* On wide screens the notice panel stays beside the menu. Its height lets the stylesheet hold a
+       panel that is taller than the window by its foot, so its last lines — the sample images, the
+       date and the counts — can always be scrolled into view. */
+    root.setProperty('--notice-h', `${Math.ceil(notice.getBoundingClientRect().height)}px`);
+  };
   set();
-  if ('ResizeObserver' in window) new ResizeObserver(set).observe(stack);
-  else window.addEventListener('resize', set);
+  if ('ResizeObserver' in window) {
+    const observer = new ResizeObserver(set);
+    observer.observe(stack);
+    observer.observe(notice);
+  }
+  /* The window's height is half of the share above, and a change in it alone resizes neither box. */
+  window.addEventListener('resize', set);
 }
 
 function wire() {
@@ -628,6 +763,9 @@ function wire() {
     btn.addEventListener('click', () => setLang(btn.dataset.setLang));
   }
   $('[data-search-open]').addEventListener('click', openSearch);
+  /* The search field filters as you type; Enter must not submit the form. A listener, not an
+     inline handler: the page's Content-Security-Policy allows no inline script. */
+  $('[data-searchbar]').addEventListener('submit', (ev) => ev.preventDefault());
   $('[data-search-cancel]').addEventListener('click', () => closeSearch());
   const input = $('[data-search-input]');
   input.addEventListener('input', () => {

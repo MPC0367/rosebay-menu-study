@@ -41,6 +41,9 @@ body {
   font: 400 1rem/1.7 var(--font-body);
   -webkit-text-size-adjust: 100%;
   overflow-x: hidden;
+  /* A run with no break in it (an account name in a caption, a long English word) wraps inside its box instead
+     of running out of it: at 200 % text on a narrow phone one such run was wider than the page. */
+  overflow-wrap: break-word;
 }
 
 :lang(en) { line-height: 1.5; }
@@ -74,6 +77,9 @@ img { max-width: 100%; }
   padding-top: env(safe-area-inset-top);
 }
 .sticky-stack[data-scrolled] { box-shadow: var(--shadow-sticky); }
+/* A stack taller than two fifths of the window (text enlarged on a phone, or a phone held sideways) is not
+   pinned: app.js marks it, and it scrolls with the page so the menu keeps the screen. */
+.sticky-stack[data-released] { position: static; box-shadow: none; }
 
 .header__row {
   display: flex; align-items: center; gap: var(--space-3);
@@ -83,6 +89,7 @@ img { max-width: 100%; }
 .header__names { flex: 1 1 auto; min-width: 0; }
 .header__name {
   margin: 0; font-family: var(--font-head); font-size: 1.125rem; line-height: 1.3; letter-spacing: .01em;
+  overflow-wrap: normal;   /* the restaurant's name is never broken inside a word */
 }
 .header__name-sub { color: var(--ink-3); font-size: .8125rem; white-space: nowrap; }
 .header__tag { margin: 2px 0 0; font-size: .875rem; line-height: 1.45; color: var(--timber-ink); }
@@ -99,7 +106,9 @@ img { max-width: 100%; }
   display: flex; align-items: center; gap: var(--space-2);
   padding: 0 var(--gutter) var(--space-2); max-width: 1240px; margin: 0 auto;
 }
-.groups__tabs { display: flex; gap: var(--space-2); flex: 1 1 auto; }
+/* With text enlarged the three group buttons no longer fit one row beside the search button on a phone. They wrap
+   onto a second row inside their own box, which may shrink; the search button keeps its size and its place. */
+.groups__tabs { display: flex; flex-wrap: wrap; gap: var(--space-2); flex: 1 1 auto; min-width: 0; }
 .tab {
   flex: 1 1 auto; min-height: 44px; padding: 0 var(--space-3);
   border: 1px solid var(--line-strong); border-radius: var(--radius-pill);
@@ -179,14 +188,16 @@ img { max-width: 100%; }
 .list { display: grid; gap: var(--space-3); }
 
 .card {
-  display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: var(--space-3);
+  --thumb: 96px;
+  display: grid; grid-template-columns: var(--thumb) minmax(0, 1fr); gap: var(--space-3);
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-m);
   box-shadow: var(--shadow-card); padding: var(--space-3); min-height: 96px;
 }
 .card.card--text { grid-template-columns: minmax(0, 1fr); }
 .card--text .card__body { border-left: 3px solid rgb(18 86 76 / .28); padding-left: var(--space-3); }
 .card__thumb {
-  grid-row: span 2; width: 96px; height: 96px; border-radius: 8px; overflow: hidden;
+  position: relative;
+  grid-row: span 2; width: var(--thumb); height: var(--thumb); border-radius: 8px; overflow: hidden;
   background: var(--paper-2);
 }
 .card__thumb img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: 50% 50%; }
@@ -194,6 +205,17 @@ img { max-width: 100%; }
    is shown whole on the second ground instead of being cropped. */
 .card__thumb--contain { background: var(--paper-2); }
 .card__thumb--contain img { object-fit: contain; }
+/* A sample image is never shown bare. The strip lies across the foot of the thumbnail and says so in
+   words; it is never more than a quarter of the box, which the builder holds clear of any mark it records.
+   The strip is part of the picture, so its type is sized from the thumbnail, not from the reader's text
+   size: one line always fits the box whole, where type in rem was cut off once text was enlarged. The words
+   that grow with the reader's text are the card's own sample line beside it. */
+.card__thumb-tag {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 1px var(--space-1); max-height: 25%; overflow: hidden;
+  background: rgb(255 254 250 / .94); color: var(--ink);
+  font-size: calc(var(--thumb) / 8); font-weight: 500; line-height: 1.5; text-align: center; white-space: nowrap;
+}
 .card__body { min-width: 0; }
 .card__cat { margin: 0 0 2px; font-size: .875rem; color: var(--ink-3); }
 .card__name { font-family: var(--font-body); font-size: 1.0625rem; font-weight: 500; line-height: 1.6; }
@@ -208,6 +230,8 @@ img { max-width: 100%; }
 /* The provenance of a photograph someone else owns, on the card itself. Quiet type at the foot of
    the body, the same colour as the other source notes — a sentence the reader can find, not a badge. */
 .card__prov { margin: var(--space-2) 0 0; font-size: .8125rem; line-height: 1.5; color: var(--ink-3); text-wrap: pretty; }
+/* The sample label is the one line on a card that must not be missed, so it is set a step darker. */
+.card__prov--sample { color: var(--ink-2); font-weight: 500; }
 
 .card__action {
   grid-column: 1 / -1; display: flex; align-items: baseline; justify-content: space-between;
@@ -247,7 +271,7 @@ img { max-width: 100%; }
   padding: var(--space-4) var(--space-4) var(--space-3);
   border-bottom: 1px solid var(--line); flex: none;
 }
-.sheet__name { flex: 1 1 auto; font-size: 1.375rem; }
+.sheet__name { flex: 1 1 auto; min-width: 0; font-size: 1.375rem; }
 .sheet__body { overflow-y: auto; padding: var(--space-4); flex: 1 1 auto; }
 .sheet__foot {
   margin: 0; flex: none; padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));
@@ -261,6 +285,11 @@ img { max-width: 100%; }
 }
 .sheet__figure figcaption { margin-top: var(--space-2); font-size: .8125rem; color: var(--ink-3); }
 .cap__mark, .cap__note { display: block; margin-top: var(--space-1); }
+/* A sample's caption opens with its label, set darker than the rest; its licence and, where the licence
+   asks for one, its credit are links to pages on other sites. */
+.cap__label { font-weight: 600; color: var(--ink-2); }
+.sheet__figure figcaption a { color: var(--green); text-decoration: underline; text-underline-offset: 2px; }
+.sheet__figure figcaption a:hover { color: var(--green-deep); }
 .sheet__sub { margin: 0 0 var(--space-4); font-size: .9375rem; color: var(--ink-2); }
 .block { margin: 0 0 var(--space-4); }
 .block > h3 { font-family: var(--font-body); font-size: .875rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); }
@@ -279,7 +308,7 @@ img { max-width: 100%; }
 .foot__inner {
   max-width: 1240px; margin: 0 auto;
   padding: var(--space-7) var(--gutter) calc(var(--space-7) + env(safe-area-inset-bottom));
-  display: grid; gap: var(--space-5);
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5);
 }
 .foot__figure { margin: 0; }
 .foot__figure img { display: block; width: 100%; height: auto; border-radius: var(--radius-m); background: var(--paper-3); }
@@ -289,10 +318,12 @@ img { max-width: 100%; }
 .foot__rights { color: var(--ink-3); }
 .foot__credit { margin: var(--space-5) 0 0; grid-column: 1 / -1; }
 
+/* The lockup never wraps, so on a 320 px screen with text at 200 % it was wider than the page and pushed the whole
+   footer sideways. Its type follows the reader's text size up to the width a phone can hold, and no further. */
 .o2-credit {
   display: inline-flex; align-items: center; min-height: 44px;
   color: var(--ink-3); text-decoration: none;
-  font-size: 0.6875rem; line-height: 1; letter-spacing: 0.2em; text-transform: uppercase;
+  font-size: min(0.6875rem, 6vw); line-height: 1; letter-spacing: 0.2em; text-transform: uppercase;
 }
 .o2-credit:hover, .o2-credit:focus-visible { opacity: 0.8; }
 .o2-credit__lockup { white-space: nowrap; }
@@ -300,10 +331,20 @@ img { max-width: 100%; }
 
 /* ── breakpoints ──────────────────────────────────────────────────────────── */
 
+/* Narrower than any phone (a 360 px window at 200 % browser zoom is 180 px wide): beside a 96 px thumbnail the text
+   was left a column a letter or two wide, on every card now that every card has a thumbnail. There the thumbnail
+   sits above the text, at its own size, and the text takes the card's width. */
+@media (max-width: 279px) {
+  .card { grid-template-columns: minmax(0, 1fr); }
+  .card__thumb { grid-row: auto; }
+  /* The same at the top of the page: beside the language switch the tagline was left a column that broke Thai inside
+     its words. There the switch sits under the names, and the names take the width. */
+  .header__row { flex-wrap: wrap; }
+}
+
 @media (min-width: 400px) {
   :root { --gutter: max(20px, env(safe-area-inset-left)); }
-  .card { grid-template-columns: 112px minmax(0, 1fr); }
-  .card__thumb { width: 112px; height: 112px; }
+  .card { --thumb: 112px; }
 }
 
 @media (min-width: 560px) {
@@ -330,9 +371,14 @@ img { max-width: 100%; }
   .aside a[aria-current="true"] { border-left-color: var(--green); color: var(--green); font-weight: 600; }
   .column { max-width: none; margin: 0; grid-column: 2; grid-row: 1; }
   .aside { grid-column: 1; grid-row: 1; }
-  .notice { position: sticky; top: calc(var(--sticky-top) + 16px); margin: 0; grid-column: 3; grid-row: 1; }
-  .card { grid-template-columns: 128px minmax(0, 1fr); }
-  .card__thumb { width: 128px; height: 128px; }
+  /* The notice stays beside the menu. When it is taller than the window it is held by its foot instead of its
+     head (app.js measures --notice-h), so scrolling the page brings every line of it into view; it is never a
+     scrolling box of its own. */
+  .notice {
+    position: sticky; top: min(calc(var(--sticky-top) + 16px), calc(100vh - var(--notice-h, 0px) - 16px));
+    margin: 0; grid-column: 3; grid-row: 1;
+  }
+  .card { --thumb: 128px; }
   .foot__inner { grid-template-columns: 340px minmax(0, 1fr); gap: var(--space-7); align-items: start; }
   .chips { display: none; }
   .tab { flex: 0 1 auto; }
@@ -345,5 +391,6 @@ img { max-width: 100%; }
 
 @media (forced-colors: active) {
   .chip, .tab, .card, .notice { border: 1px solid CanvasText; }
+  .card__thumb-tag { background: Canvas; color: CanvasText; border-top: 1px solid CanvasText; }
   :focus-visible { outline: 2px solid Highlight; }
 }

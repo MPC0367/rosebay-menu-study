@@ -11,33 +11,60 @@ cart, and no order is ever sent anywhere. The page is `noindex, nofollow`.
 The dishes, drinks and options were transcribed from the restaurant's publicly posted menu
 photographs (2021–2025), from articles and reviews, and from its own social posts. Every
 item records where it came from. Prices are **historical** values read off those photographed
-menus; the restaurant has not confirmed them, and an item with no printed price says so.
+menus; the restaurant has not confirmed them, and an item for which the studio has no confirmed price
+says so. Five items give a figure the restaurant has printed and the studio has not yet taken into
+its records: the longan drink on a printed drinks page, and four matcha drinks on the printed
+posters on the café wall. Each entry gives the figure, says where it was seen and says it is
+unconfirmed. The page gives no other figure for an item with no confirmed price, though the
+studio's records hold a few more (see [NOTICE.md](NOTICE.md)).
 
-## Photographs — rights are not settled
+## Photographs — three kinds, and the rights differ
 
-Read this before reusing anything here.
+Read this before reusing anything here. The page shows 59 photographs: one for each of its 58 items,
+and the shopfront.
 
-- **23 photographs are Rosebay's own**: some the restaurant published itself on its Instagram or
-  Facebook, the rest are its own printed-menu photography, captured from the printed menu book by
-  Wongnai members. **The restaurant's written permission is still outstanding.**
-- **7 photographs belong to other people** — three Wongnai members, a Lemon8 creator and two review
-  blogs — and are published here for this demonstration without their permission. Each one carries
-  a caption naming the kind of source and saying the restaurant did not post it and that its
-  photographer was not asked.
-- **People are named on the page**: the captions of the ten printed-menu photographs each name the
-  Wongnai member who photographed that page of the restaurant's printed menu. None of the seven
-  captions names the owner of its photograph. Two of the seven carry a mark their owner put in the
-  frame, kept whole: the Lemon8 photograph shows the platform's mark and the creator's handle, and
-  one Wongnai photograph shows its uploader's monogram. One of the three account names in the
-  printed-menu captions is also the account name recorded as the owner of one of the seven, so
-  that name is on the page, under a different photograph.
-- No logo or watermark in any photograph has been removed, cut through or retouched. Most of the
-  photographs are cropped to the dish. In the ten printed-menu photographs the crop leaves out the
+- **27 photographs are Rosebay's own**: 15 the restaurant published itself on its Instagram or
+  Facebook, 11 are its own printed-menu photography, photographed from the printed menu book by
+  Wongnai members, and 1 is its own menu card from its Google listing. **The restaurant's written
+  permission is still outstanding.**
+- **13 photographs belong to other people.** They show Rosebay's food and drink, were found on
+  Wongnai, Lemon8, Pantip and review blogs, and are published here for this demonstration without
+  their owners' permission. Each one carries a caption naming the kind of source and saying that the
+  restaurant did not post it and that its owner's permission has not been obtained.
+  For two of the 13, uploaded to Wongnai by one member, it is not established whether they are the
+  restaurant's own; they are recorded as other people's, and their captions say that instead.
+- **19 photographs are sample images** from free-licence photo libraries. Sample images do not show
+  Rosebay's food or drink; each stands in where the studio has no photograph of the item at Rosebay
+  that it can show. For 15 of the 19 the studio found no photograph of the item at Rosebay; for
+  three it found something it could not use (a picture too small to show, or photographs that more
+  likely show a different drink); and for one, the Thai iced tea, a photograph was found and is held
+  back, because the drink cannot be shown without cropping out the mark its creator put on the
+  picture.
+  Every one is labelled "ภาพตัวอย่าง · ไม่ใช่ภาพจากร้าน" / "Sample image — not from the restaurant"
+  on its menu card and in its caption, is tagged "Sample" on its thumbnail, and has a file name
+  beginning `sample-`. Each was cropped, resized and re-encoded for the web, with its file metadata
+  removed; nothing in the picture was retouched. Each is used under its own licence; the list, with
+  source pages, licences and credits, is in [NOTICE.md](NOTICE.md).
+- **No private person is named in the text** of these files: the captions say "a Wongnai member",
+  "a Lemon8 creator", "a Pantip member" or "a review blog" and no more. The one exception is the
+  creator of a sample whose licence requires attribution, who is named with the licence because the
+  licence asks for it. The pictures themselves are a separate matter: two of other people's
+  photographs show the Lemon8 handle their creator burnt into the picture, and one shows an
+  uploader's monogram. Those are marks, and they are kept whole (see [NOTICE.md](NOTICE.md)).
+- Inside the part of each photograph that is shown, no logo, watermark or other mark has been
+  removed, cut through or retouched. In three photographs the crop leaves out something that sits
+  elsewhere in the original frame (a caption its photographer typed into the picture; a small
+  watermark on a sample whose licence asks for no credit; the logo band of the restaurant's own menu
+  card), and each of those says so in its details. That sample apart, a handle, watermark or
+  signature that a photograph's creator or uploader put on it is never left out by a crop: a
+  photograph that cannot be shown with it whole is not used. Most of the photographs
+  are cropped to the food or drink. In the eleven printed-menu photographs the crop leaves out the
   page headings and the names and prices printed beside the photographs, and in three of them it
   also leaves out a dish name or a price printed inside the photograph.
 
-The restaurant's name and marks are its own. If you are Rosebay, or you took one of these
-photographs, and you want an image taken down, write to O2 Design Studio and it comes down.
+The restaurant's name and marks are its own. If you are Rosebay, or one of these photographs is
+yours — a sample image included — and you want it taken down, write to O2 Design Studio and it comes
+down.
 
 ## Running it
 
@@ -49,6 +76,9 @@ and Chromium does not fetch `file://` URLs.
 index.html · style.css · app.js · menu.json · img/
 ```
 
+The page carries a Content-Security-Policy that allows only its own files: one stylesheet, one
+script, its images and `menu.json`. It loads nothing from any other site.
+
 Built from O2 Design Studio's private research catalogue.
 
-> **Rights:** the photographs are not O2's and no permission has been given. Read [NOTICE.md](NOTICE.md) before reusing anything here.
+> **Rights:** none of the photographs is O2's. Rosebay's own and other people's are shown without permission; the sample images are used under their licences. Read [NOTICE.md](NOTICE.md) before reusing anything here.
